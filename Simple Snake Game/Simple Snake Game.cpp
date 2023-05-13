@@ -8,15 +8,14 @@ using namespace std;
 bool gameOver;
 const int width = 35;   // map width
 const int heigth = 20;  // map heigth
+int x, y, fruitX, fruitY, score;  //coordinates of the head snake and fruit
 
 const int InfWidth = 30; // the width of the table
-const int countROW = 6; // number of lines
+const int countROW = 6;  // number of lines
 const int InfX = 55, infY = 3;     //coordinates board information
 
-int x, y, fruitX, fruitY, score;  //coordinates of the head and fruit
-
-int nTail; // кількість сигментів змії
-int TailX[100], TailY[100];
+int nTail; // the length of the snake
+int TailX[100], TailY[100]; //coordinates of each segment of the snake
 
 enum mDirection {STOP = 0, LEFT, RIGHT, UP, DOWN}; // possible directions of movement
 mDirection dir;
@@ -34,6 +33,7 @@ void Setup()
     fruitY = rand() % heigth;
 }
 
+/*Display of the table containing the game score and control elements*/
 void DrawInfGame()
 {
 
@@ -43,7 +43,7 @@ void DrawInfGame()
     {
         SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), c);
          
-        if (!(row & 1))  // друк пробілів між рядками
+        if (!(row & 1))  // print spaces between rows in the table
         { 
             for (int i = 0; i < InfWidth + 1; i++)
                 (i == 0) || (i == InfWidth) ? cout << "." : cout << "-";
@@ -65,17 +65,16 @@ void DrawInfGame()
 
         else if (row == 11)
             cout << "|" << setw(InfWidth / 2) << "EXIT(X)" << setw(InfWidth / 2) << "|";
-        c.Y++; // перехід на рядок вниз
+        c.Y++; // move down a line
     }
 }
 
+/*Changing the score*/
 void DrawScore()
 {
-    COORD c{ InfX, infY  + 3}; // Це відповідні координати в таблиці на екрані 
+    COORD c{ InfX, infY  + 3}; // These are the corresponding coordinates in the table on the screen
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), c);
     cout << "|" << setw(InfWidth / 2.5) << "SCORE:" << setw(InfWidth / 2.5) << score << setw(InfWidth / 5) << "|";
-
-
 }
 
 void DrawMap()
@@ -101,15 +100,13 @@ void DrawMap()
         {
             if (j == 0) cout << "#";
 
-            if (i == y && j == x)
-            {
+            if (i == y && j == x) {
                 SetConsoleTextAttribute(col, 1);
                 cout << "0";
                 SetConsoleTextAttribute(col, 15);
             }
             
-            else if (i == fruitY && j == fruitX)
-            {
+            else if (i == fruitY && j == fruitX) {
                 SetConsoleTextAttribute(col, 2);
                 cout << "F";
                 SetConsoleTextAttribute(col, 15);
@@ -121,8 +118,7 @@ void DrawMap()
 
                 for (int k = 0; k < nTail; k++)
                 {
-                    if (TailX[k] == j && TailY[k] == i)
-                    {
+                    if (TailX[k] == j && TailY[k] == i) {
                         SetConsoleTextAttribute(col, 1);
                         cout << "o";
                         SetConsoleTextAttribute(col, 15);
@@ -133,8 +129,8 @@ void DrawMap()
                     cout << " ";
             }
 
-            if (j == width - 1) cout << "#";
-
+            if (j == width - 1) 
+                cout << "#";
         }
         cout << endl;
     }
@@ -197,10 +193,10 @@ void Logic()
     case DOWN: y++; break;
     }
 
-    if (x >= width || y >= heigth || x < 0 || y < 0) // перевірка на удар об стіну
+    if (x >= width || y >= heigth || x < 0 || y < 0) // if hit the wall
         gameOver = true;
 
-    for (int i = 0; i < nTail; i++) // перевірка на удар об хвіст
+    for (int i = 0; i < nTail; i++) // tail hit check
     {
         if (TailX[i] == x && TailY[i] == y)
             gameOver = true;
@@ -220,8 +216,6 @@ int main()
 {
     Setup();
     DrawInfGame();
-
-    char moving; // сторона в яку рухається змія
 
     while (!gameOver)
     {
