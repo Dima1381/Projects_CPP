@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip> 
 #include <unordered_map>
 #include "Hash.h"
 
@@ -9,12 +10,13 @@ namespace hash
 	class AutoTest
 	{
 	 private:
-		 int NumberOfHash;
-		 string GenerationString();
-		 char receivingExistCodes(int);
-
+		 int NumberOfHash; // 
+		 string GenerationString(); // generation string len (5 - 25)
+		 char receivingExistCodes(int); // Reduce a number to a real character in an ASCII table
+		 void PrintCollision(short, const string &str1, const string &str2, const string &hash); // print collisions on the screen
 	 public:
-		 AutoTest(int count) : NumberOfHash(count) {};
+		 bool Display; // Off/On, print collisions on the screen
+		 AutoTest(int count) : NumberOfHash(count), Display(true) {};
 		 void StatrHasing(int LenHash);
 
 	};
@@ -23,24 +25,25 @@ namespace hash
 	{
 		string str;
 		string symbols = "0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
-
-		int lenString = rand() % 25 + 5;
+		int CountSymbols = 62;
+		int lenString = 5 + rand() % (25 - 5);
 
 		for (int i = 0; i < lenString; i++)
 		{
-			str += receivingExistCodes(symbols[rand() % symbols.size() + 0]);
+			str += receivingExistCodes(symbols[rand() % CountSymbols + 0]);
 		}
 
 		return str;
 	}
+
 	char AutoTest::receivingExistCodes(int x)
 	{
-		x += 122;
+		x += 50 + rand() % (122 - 50);
 
 		while (!((x >= 48 && x <=57) || (x >= 65 && x <= 90) || (x >= 97 && x <= 122)))
 		{
-			if (x < 48) x += rand() % 22 + 1;
-			else if (x > 122) x -= rand() % 122 + 1;
+			if (x < 48) x += rand() % 25 + 5;
+			else if (x > 122) x -= rand() % 122 + 10;
 
 			else
 				x -= 32;
@@ -48,40 +51,55 @@ namespace hash
 		return x;
 	
 	}
+
+	void AutoTest::PrintCollision(short number, const string &str1, const string &str2, const string &hash)
+	{
+		cout << "-------------------------------------------------------------------------------------" << endl;
+		cout << "|" << setw(8) << number << " | " << setw(25) << str1 << " | " << setw(25) << str2 << " | " << setw(15) << hash << " |" << endl;
+	}
+
+
 	void AutoTest::StatrHasing(int LenHash)
 	{
-		unordered_map<string, string> maphash;
-		unordered_map<string, string>::iterator it = maphash.begin();
-
-		string temp_str;
-		string temp_hash;
-
-		Hash hash;
-
-		int col = 0;
-		for (int i = 0; i < NumberOfHash; i++)
+		if (LenHash <= 64 && LenHash >= 4)
 		{
-			temp_str = GenerationString();
-			temp_hash = hash.GetHash(temp_str, LenHash);
+			unordered_map<string, string> maphash;
+			unordered_map<string, string>::iterator it = maphash.begin();
 
-			
-			it = maphash.find(temp_hash);
+			Hash hash;
 
-			if (it != maphash.end())
+			int NumberCollisions = 0;
+
+			if (Display)
+				cout << "Collision | " << setw(25) << "First string" << " | " << setw(25) << " Second string" << " | " << setw(10) << "Hash" << endl;
+
+			for (int i = 0; i < NumberOfHash; i++)
 			{
-				if (it->second != temp_str)
+				string temp_str = GenerationString(); // random string generation, length 5-25
+				string temp_hash = hash.GetHash(temp_str, LenHash); // generating hash from new string
+
+				it = maphash.find(temp_hash);
+
+				if (it != maphash.end())
 				{
-					cout << "Colision '" << temp_str<< "' and '" << it->second << "' = " << it->first << endl;
-					col++;
+					if (it->second != temp_str) // if strings with the same hash are not the same 
+					{
+						NumberCollisions++;
+
+						if (Display) // Displaying a collision on the screen 
+							PrintCollision(NumberCollisions, temp_str, it->second, it->first);
+					}
 				}
+
+				maphash.insert({ temp_hash, temp_str });
 			}
 
-			maphash.insert({temp_hash, temp_str});
+			cout << "Number collisions = " << NumberCollisions;
+			maphash.clear();
 		}
-
-
-		cout << "Col = " << col;
-		maphash.clear();
+		else
+			LenHash > 64 ? cout << "Hash length is too long" << endl : cout << "Hash length is too short" << endl;
+		
 	}
 }
 

@@ -9,8 +9,8 @@ namespace hash
 	private:
 		string hash;
 
-		int gelControlSum(string userString);
-		char receivingExistCodes(int);
+		int gelControlSum(string userString); // Sum of all characters in string, in ASCII table code 
+		char receivingExistCodes(int); // // Reduce a number to a real character in an ASCII table
 
 	public:
 		
@@ -20,45 +20,39 @@ namespace hash
 			{
 				this->hash.clear();
 
-
-				// мінімальна довжина хешу 2^n
+				// minimum hash length 2^n
 				unsigned int minLenHash = 2;
-				// довжина хешу, яка приближена до потрібної довжини
+				// a hash length that is close to the desired length
 				unsigned int realMinHash = 0;
 
-				// соль оригінального рядка
+				// Sault original string
 				unsigned int originalSault = gelControlSum(userString);
 				unsigned int originalLenStr = userString.size();
 
-				// отримання довжини рядка, 2^n ближчий до заданій довжині хешу
+				// get string lengths 2^n closer to the given hash length
 				while (minLenHash <= lenHash)
-				{
 					realMinHash = (minLenHash *= 2);
-				}
-
-				// отримуємо ближчу до довжини заданого рядка - 2^n
+				
+				// we get closer to the length of the given line - 2^n
+				// example : if original string lengths = 20, lengths hash will be = 32 (2^n)
+				// length of the hash must be longer than the original string
 				while (minLenHash <= originalLenStr)
-				{
 					minLenHash *= 2;
-				}
 
-				// довжина хешу ма були, як мінімум в 2 рази більшої за оригінальний рядок
-				if ((minLenHash - originalLenStr) < minLenHash) minLenHash * 2;
-
-				// кількість симфолів які необхідно додати до довжини хешу
+				// number of symbols that must be added to the hash length
 				int addCount = minLenHash - originalLenStr;
 
-				// додавання 
+				// adding
 				for (int i = 0; i < addCount; i++)
 				{
 					userString += receivingExistCodes(userString[i] + userString[i + 1]);
 				}
 
+				// Maximum hash length sault
 				int maxlenHashSault = gelControlSum(userString);
 				int maxLenStr = userString.size();
 
-				// зжатие хеша
-
+				// hash compressions : userString.size / 2, until userString.size != realMinHash
 				while (userString.size() != realMinHash)
 				{
 					int center = userString.size() / 2;
@@ -75,6 +69,7 @@ namespace hash
 				int rem = realMinHash - lenHash;
 				int countCompress = realMinHash / rem;
 
+				// build a new hash from the previous hash, his new length = actual required length - 4 ( (-4) - because we will add 4 saults to the hash)
 				for (int i = 0; hash.size() < (lenHash - 4); i++)
 				{
 					if (i % countCompress == 0)
@@ -83,6 +78,7 @@ namespace hash
 						hash += userString[i];
 				}
 
+				// adding saults
 				hash += receivingExistCodes(originalSault);
 				hash += receivingExistCodes(originalLenStr);
 
@@ -109,8 +105,7 @@ namespace hash
 
 	char Hash::receivingExistCodes(int x)
 	{
-		// 48-57   65 - 90   97-122
-		x += 122;
+	    x += rand() % 122 + 50;
 
 		while (!((x >= 48 && x <=57) || (x >= 65 && x <= 90) || (x >= 97 && x <= 122)))
 		{
@@ -119,9 +114,7 @@ namespace hash
 
 			else
 				x -= 10;
-
 		}
-
 		return x;
 	}
 
