@@ -1,6 +1,6 @@
 #include <iostream>
 #include <iomanip> 
-#include <unordered_map>
+#include <map>
 #include "Hash.h"
 
 
@@ -63,8 +63,8 @@ namespace hash
 	{
 		if (LenHash <= 64 && LenHash >= 4)
 		{
-			unordered_map<string, string> maphash;
-			unordered_map<string, string>::iterator it = maphash.begin();
+			multimap<string, string> maphash;
+			multimap<string, string>::iterator it = maphash.begin();
 
 			Hash hash;
 
@@ -82,12 +82,19 @@ namespace hash
 
 				if (it != maphash.end())
 				{
-					if (it->second != temp_str) // if strings with the same hash are not the same 
-					{
-						NumberCollisions++;
+					auto it1 = maphash.lower_bound(temp_hash);
+					auto it2 = maphash.upper_bound(temp_hash);
 
-						if (Display) // Displaying a collision on the screen 
-							PrintCollision(NumberCollisions, temp_str, it->second, it->first);
+					while (it1 != it2) // traverse through all collisions for a given hashes
+					{
+						if (it1->first == temp_hash &&  it1->second != temp_str) // if strings with the same hash are not the same 
+						{
+							NumberCollisions++;
+
+							if (Display) // Displaying a collision on the screen 
+								PrintCollision(NumberCollisions, temp_str, it->second, it->first);
+						}
+						it1++;
 					}
 				}
 

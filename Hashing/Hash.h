@@ -25,8 +25,8 @@ namespace hash
 				// a hash length that is close to the desired length
 				unsigned int realMinHash = 0;
 
-				// Sault original string
-				unsigned int originalSault = gelControlSum(userString);
+				// Salt original string
+				unsigned int originalSalt = gelControlSum(userString);
 				unsigned int originalLenStr = userString.size();
 
 				// get string lengths 2^n closer to the given hash length
@@ -48,8 +48,8 @@ namespace hash
 					userString += receivingExistCodes(userString[i] + userString[i + 1]);
 				}
 
-				// Maximum hash length sault
-				int maxlenHashSault = gelControlSum(userString);
+				// Maximum hash length salt
+				int maxlenHashSalt = gelControlSum(userString);
 				int maxLenStr = userString.size();
 
 				// hash compressions : userString.size / 2, until userString.size != realMinHash
@@ -69,7 +69,7 @@ namespace hash
 				int rem = realMinHash - lenHash;
 				int countCompress = realMinHash / rem;
 
-				// build a new hash from the previous hash, his new length = actual required length - 4 ( (-4) - because we will add 4 saults to the hash)
+				// build a new hash from the previous hash, his new length = actual required length - 4 ( (-4) - because we will add 4 salts to the hash)
 				for (int i = 0; hash.size() < (lenHash - 4); i++)
 				{
 					if (i % countCompress == 0)
@@ -78,11 +78,11 @@ namespace hash
 						hash += userString[i];
 				}
 
-				// adding saults
-				hash += receivingExistCodes(originalSault);
+				// adding salts
+				hash += receivingExistCodes(originalSalt);
 				hash += receivingExistCodes(originalLenStr);
 
-				hash += receivingExistCodes(maxlenHashSault);
+				hash += receivingExistCodes(maxlenHashSalt);
 				hash += receivingExistCodes(maxLenStr);
 
 				return hash;
@@ -94,13 +94,13 @@ namespace hash
 
 	int Hash::gelControlSum(string userString)
 	{
-		int sault = 0, lenUserStr = userString.length();
+		int salt = 0, lenUserStr = userString.length();
 
 		for (int i = 0; i < lenUserStr; i++)
 		{
-			sault += (int)userString[i];
+			salt += (int)userString[i];
 		}
-		return sault;
+		return salt;
 	}
 
 	char Hash::receivingExistCodes(int x)
