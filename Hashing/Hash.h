@@ -103,19 +103,18 @@ namespace hash
 		return salt;
 	}
 
-	char Hash::receivingExistCodes(int x)
+     char Hash::receivingExistCodes(int x)
 	{
-	    x += rand() % 122 + 50;
+	    x += 48;
 
 		while (!((x >= 48 && x <=57) || (x >= 65 && x <= 90) || (x >= 97 && x <= 122)))
 		{
-			if (x < 48) x += rand() % 22 + 1;
-			else if (x > 122) x -= rand() % 122 + 1;
+			if (x < 48) x += 20;
+			else if (x > 122) x -= 100;
 
 			else
 				x -= 10;
 		}
 		return x;
 	}
-
 }
