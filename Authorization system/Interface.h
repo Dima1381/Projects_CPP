@@ -44,8 +44,10 @@ public:
 	// Admin search function in the database
 	bool searchAdminInDB(const string& login, const string& password);
 
+	// Checking whether the user's login (username) is free
 	bool isUserNameAvailable(const string& login);
 
+	// Checking whether the login (username) of the administrator is free
 	bool isAdminNameAvailable(const string& login);
 };
 
@@ -53,8 +55,8 @@ class Hashing
 {
 private:
 	string hash;
-	short lenHash;
-	int gelControlSum(string userString); // Sum of all characters in string, in ASCII table code 
+	short lenHash; // the length of the hash, default = 16
+	int gelControlSum(string password); // Sum of all characters in string, in ASCII table code 
 	char receivingExistCodes(int);        //  Reduce a number to a real character in an ASCII table
 
 public:
@@ -70,20 +72,15 @@ private:
 	Hashing hashing;
 public:
 	Authentication() {}
+
+	// main menu
 	void AuthenticationMenu();
 
 	void registerUser();
 	void registerAdmin();
 
 	bool userAuthorization();
-
 	bool adminAuthorization();
 
 	string const GetRole() { return role; }
-};
-
-
-class UserManager : private Interface // клас для роботи з користувачем 
-{
-
 };

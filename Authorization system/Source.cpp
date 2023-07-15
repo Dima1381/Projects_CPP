@@ -92,7 +92,7 @@ void Authentication::AuthenticationMenu()
 void Authentication::registerUser()
 {
     string login, password, email;
-    cout << "Enter username: ";
+    cout << "\nEnter username: ";
     cin >> login;
     cout << "Enter password: ";
     cin >> password;
@@ -112,7 +112,7 @@ void Authentication::registerUser()
 void Authentication::registerAdmin()
 {
     string login, password, email;
-    cout << "Enter username: ";
+    cout << "\nEnter username: ";
     cin >> login;
     cout << "Enter password: ";
     cin >> password;
@@ -132,7 +132,7 @@ void Authentication::registerAdmin()
 bool Authentication::userAuthorization()
 {
     string login, password;
-    cout << "Enter login: ";
+    cout << "\nEnter login: ";
     cin >> login;
     cout << "Enter password: ";
     cin >> password;
@@ -149,7 +149,7 @@ bool Authentication::userAuthorization()
 bool Authentication::adminAuthorization()
 {
     string login, password;
-    cout << "Enter login: ";
+    cout << "\nEnter login: ";
     cin >> login;
     cout << "Enter password: ";
     cin >> password;
@@ -431,7 +431,7 @@ string Hashing::GetHash(string password)
         // a hash length that is close to the desired length
         unsigned int realMinHash = 0;
 
-        // Salt original string
+        // Salt original string (password)
         unsigned int originalSalt = gelControlSum(password);
         unsigned int originalLenStr = password.size();
 
@@ -440,8 +440,8 @@ string Hashing::GetHash(string password)
             realMinHash = (minLenHash *= 2);
 
         // we get closer to the length of the given line - 2^n
-        // example : if original string lengths = 20, lengths hash will be = 32 (2^n)
-        // length of the hash must be longer than the original string
+        // example : if original password lengths = 20, lengths hash will be = 32 (2^n)
+        // length of the hash must be longer than the original password
         while (minLenHash <= originalLenStr)
             minLenHash *= 2;
 
