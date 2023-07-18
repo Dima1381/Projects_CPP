@@ -23,15 +23,31 @@ char validateChoice() {
 void Interface::Welcome()
 {
     char choice;
+    bool validChoice = false;
+
 	cout << "------------------ Welcome to system -------------------" << endl;
-	cout << "\nAre you an administrator(A) or a user(U) : ";
-    choice = validateChoice();
 
-    switch (choice) {
-    case 'A': {  SetRole("Admin");  break; }
+    do {
+        cout << "\nAre you an administrator(A) or a user(U): ";
+        choice = validateChoice();
 
-    case 'U': { SetRole("User"); break; }
-    }
+        switch (choice) {
+        case 'A': {
+            SetRole("Admin");
+            validChoice = true;
+            break;
+        }
+        case 'U': {
+            SetRole("User");
+            validChoice = true;
+            break;
+        }
+        default: {
+            cout << "Invalid choice. Please try again." << endl;
+            break;
+        }
+        }
+    } while (!validChoice);
 }
 
 void Interface::Exit()
